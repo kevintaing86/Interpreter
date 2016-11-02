@@ -1,6 +1,6 @@
 #Kevin Taing
 
-EOF, SPACE, OR, AND, TRUE, FALSE, LEFT_PARAN, RIGHT_PARAN, ARROW1, ARROW2, TAIL = 'EOF', 'SPACE', 'OR', 'AND', 'TRUE', 'FALSE', 'LEFT_PARAN', 'RIGHT_PARAN', 'ARROW1', 'ARROW2', 'TAIL'
+EOF, SPACE, OR, AND, TRUE, FALSE, LEFT_PARAN, RIGHT_PARAN, ARROW1, ARROW2, TAIL, NOT = 'EOF', 'SPACE', 'OR', 'AND', 'TRUE', 'FALSE', 'LEFT_PARAN', 'RIGHT_PARAN', 'ARROW1', 'ARROW2', 'TAIL', 'NOT'
 
 class Token(object):
     def _init_(self, type, value):
@@ -8,90 +8,88 @@ class Token(object):
         self.value = value
 
     def _str_(self):
-        return 'Token({type}, {value})'.format(type=self.type, value=repr(self.value))
+        return Token({type}, {value})'.format(type=self.type, value=repr(self.value))
 
     def _repr_(self):
         return self._str_()
 
+class Stack(object):
+    def _intit_(self):
+        self.items = []
 
-class Interpreter(object):
-    def _init(self, text):
+    def push(self, item):
+        self.items.append(item)
+
+    def pop(self):
+        return self.items.pop()
+
+    def isEmpty(self):
+        if self.items = []:
+            return TRUE
+        else:
+            return FALSE
+
+class Lex(object):
+    def _init_(self, text):
         self.text = text
         self.pos = 0
-        self.current_token = None
+        self.current_token = text[self.pos]
 
-    def error(self):
-        raise Exception('There was an error')
+    def get_current():
+        return self.current_token
+
+    def get_next():
+        if self.pos > len(self.text) - 1:
+            self.current_token = 'EOF'
+
+        self.pos += 1
+        while text[self.pos == ' ']:
+            self.pos += 1
+
+        if text[self.pos] == '-':
+            if text[self.pos + 1] == '>':
+                self.pos += 1
+                self.current_token = '->'
+                #return self.current_token
+            else:
+                raise Exception('Syntax error: arrow typo')
+
+        self.current_token = text[self.pos]
+        #return self.current_token
+
+class Interpreter(object):
+    def _init_(self, text):
+        self.text = text
+        self.lex = Lex(text)
+        self.stack = Stack()
 
     def get_next(self):
         text = self.text
-
         if self.pos > len(text) - 1:
             return Token(EOF, None)
 
+        self.pos += 1
         current_char = text[self.pos]
+        return current_char
 
-        if current_char == '.':
-            token = Token(EOF, current_char)
-            self.pos += 1
-            return token
+    def atom():
+        if self.lex.get_current() == 'T':
+            self.stack.push('T')
+            self.lex.get_next()
+        elif self.lex.get_current() == 'F':
+            self.stack.push('F')
+            self.lex.get_next()
+        elif self.lex.get_current() == '('
+            self.lex.get_next()
+            #call another function
+        else:
+            raise Exception('Syntax error: error in atom')
 
-        if current_char == ' ':
-            token = Token(SPACE, current_char)
-            self.pos += 1
-            return token
+    def literal():
+        if self.lex.get_current() == '~':
+            self.lex.get_next()
 
-        if current_char == 'v':
-            token = Token(OR, current_char)
-            self.pos += 1
-            return token
-
-        if current_char == '^':
-            token = Token(AND, current_char)
-            self.pos += 1
-            return token
-
-        if current_char == 'T':
-            token = Token(TRUE, current_char)
-            self.pos += 1
-            return token
-
-        if current_char == 'F':
-            token = Token(FALSE, current_char)
-            self.pos += 1
-            return token
-
-        if current_char == '(':
-            token = Token(LEFT_PARAN, current_char)
-            self.pos += 1
-            return token
-
-        if current_char == ')':
-            token = Token(RIGHT_PARAN, current_char)
-            self.pos += 1
-            return token
-
-        if current_char == '-':
-            token = Token(ARROW1, current_char)
-            self.pos += 1
-            return token
-
-        if current_char == '>':
-            token = Token(ARROW2, current_char)
-            self.pos += 1
-            return token
-
-        if current_char == '~':
-            token = Token(TAIL, current_char)
-            self.pos += 1
-            return token
-
-        self.error()
-
-
-def eat(self, token_type):
-    if self.current_token.type == token_type:
-        self.current_token = self.get_next()
-
-    else:
-        self.error()
+            if(self.lex.isEmpty()):
+                raise Exception('Syntax error: trying to inverse something that is not inversible')
+            else:
+                
