@@ -1,17 +1,5 @@
 #Kevin Taing
 
-EOF, SPACE, OR, AND, TRUE, FALSE, LEFT_PARAN, RIGHT_PARAN, ARROW1, ARROW2, TAIL, NOT = 'EOF', 'SPACE', 'OR', 'AND', 'TRUE', 'FALSE', 'LEFT_PARAN', 'RIGHT_PARAN', 'ARROW1', 'ARROW2', 'TAIL', 'NOT'
-
-class Token(object):
-    def _init_(self, type, value):
-        self.type = type
-        self.value = value
-
-    def _str_(self):
-        return Token({type}, {value})'.format(type=self.type, value=repr(self.value))
-
-    def _repr_(self):
-        return self._str_()
 
 class Stack(object):
     def _intit_(self):
@@ -24,7 +12,7 @@ class Stack(object):
         return self.items.pop()
 
     def isEmpty(self):
-        if self.items = []:
+        if self.items == []:
             return TRUE
         else:
             return FALSE
@@ -73,7 +61,7 @@ class Interpreter(object):
             self.stack.push('F')
             self.lex.get_next()
             return TRUE
-        elif self.lex.get_current() == '('
+        elif self.lex.get_current() == '(':
             self.lex.get_next()
             #call another function
             #return TRUE 
@@ -121,7 +109,7 @@ class Interpreter(object):
                 temp = self.lex.pop()
                 temp2 = self.lex.pop()
 
-                if temp == 'F' || temp2 == 'F':
+                if temp == 'F' or temp2 == 'F':
                     self.lex.push('F')
                     return TRUE
                 else:
@@ -151,7 +139,7 @@ class Interpreter(object):
                 temp = self.lex.pop()
                 temp2 = self.lex.pop()
 
-                if temp == 'T' || temp2 == 'T':
+                if temp == 'T' or temp2 == 'T':
                     self.lex.push('T')
                     return TRUE
                 else:
