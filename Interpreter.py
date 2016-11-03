@@ -1,8 +1,10 @@
-#Kevin Taing
-
+# Kevin Taing
+# python 2.7, python interpreter
+#
+#~My code does not read from a file. Just type into the console
 
 class Stack(object):
-    def _intit_(self):
+    def __init__(self):
         self.items = []
 
     def push(self, item):
@@ -13,41 +15,42 @@ class Stack(object):
 
     def isEmpty(self):
         if self.items == []:
-            return TRUE
+            return True
         else:
-            return FALSE
+            return False
 
 class Lex(object):
-    def _init_(self, text):
+    def __init__(self, text):
         self.text = text
         self.pos = 0
         self.current_token = text[self.pos]
 
     def get_current(self):
         return self.current_token
-    
+
     #This will advance the pointer and it will return the token
     def get_next(self):
         if self.pos > len(self.text) - 1:
-            self.current_token = 'EOF'
+            self.current_token = '.'
+            return self.current_token
 
         self.pos += 1
-        while text[self.pos == ' ']:
+        while self.text[self.pos] == ' ':
             self.pos += 1
 
-        if text[self.pos] == '-':
-            if text[self.pos + 1] == '>':
+        if self.text[self.pos] == '-':
+            if self.text[self.pos + 1] == '>':
                 self.pos += 1
                 self.current_token = '->'
                 #return self.current_token
             else:
                 raise Exception('Syntax error: arrow typo')
 
-        self.current_token = text[self.pos]
+        self.current_token = self.text[self.pos]
         #return self.current_token
 
 class Interpreter(object):
-    def _init_(self, text):
+    def __init__(self, text):
         self.text = text
         self.lex = Lex(text)
         self.stack = Stack()
@@ -56,18 +59,18 @@ class Interpreter(object):
         if self.lex.get_current() == 'T':
             self.stack.push('T')
             self.lex.get_next()
-            return TRUE
+            return True
         elif self.lex.get_current() == 'F':
             self.stack.push('F')
             self.lex.get_next()
-            return TRUE
+            return True
         elif self.lex.get_current() == '(':
             self.lex.get_next()
-            #call another function
-            #return TRUE 
+            if self.Bool_Stmt():
+                return True
         else:
-            raise Exception('Syntax error: error in atom')
-            return FALSE
+            raise Exception('Syntax error: expected an atom')
+            return False
 
     def literal(self):
         if self.lex.get_current() == '~':
@@ -75,143 +78,141 @@ class Interpreter(object):
 
             if self.lex.isEmpty():
                 raise Exception('Syntax error: trying to inverse something that is not inversible')
-                return FALSE
-            elif literal():
+                return False
+            elif self.literal():
                 temp = self.stack.pop()
 
                 if temp == 'T':
                     self.stack.push('F')
-                    return TRUE
+                    return True
                 elif temp == 'F':
                     self.stack.push('T')
-                    return TRUE
-            elif atom():
+                    return True
+            elif self.atom():
                 temp = self.stack.pop()
 
                 if temp == 'T':
                     self.stack.push('F')
-                    return TRUE
+                    return True
                 elif temp == 'F':
                     self.stack.push('T')
-                    return TRUE
-        elif atom():
-            return TRUE
+                    return True
+        elif self.atom():
+            return True
 
         else:
             raise Exception('Syntax error: expected a literal')
-            return FALSE
+            return False
 
     def And_Tail(self):
         if self.lex.get_current() == '^':
             self.lex.get_next()
 
-            if literal():
-                temp = self.lex.pop()
-                temp2 = self.lex.pop()
+            if self.literal():
+                temp = self.stack.pop()
+                temp2 = self.stack.pop()
 
                 if temp == 'F' or temp2 == 'F':
-                    self.lex.push('F')
-                    return TRUE
+                    self.stack.push('F')
+                    return True
                 else:
                     self.lex.push('T')
-                    return TRUE
+                    return True
 
         else:
-            return TRUE
+            return True
 
 
     def And_Term(self):
-        if literal():
-            if And_Tail():
-                return TRUE
+        if self.literal():
+            if self.And_Tail():
+                return True
             else:
                 raise Exception('And term expected And_Tail')
-                return FALSE
+                return False
         else:
             raise Exception('And term error')
-            return FALSE
+            return False
 
     def Or_Tail(self):
         if self.lex.get_current() == 'v':
             self.lex.get_next()
 
-            if And_Term():
-                temp = self.lex.pop()
-                temp2 = self.lex.pop()
+            if self.And_Term():
+                temp = self.stack.pop()
+                temp2 = self.stack.pop()
 
                 if temp == 'T' or temp2 == 'T':
-                    self.lex.push('T')
-                    return TRUE
+                    self.stack.push('T')
+                    return True
                 else:
-                    self.lex.push('F')
-                    return TRUE
+                    self.stack.push('F')
+                    return True
         else:
-            return TRUE
+            return True
 
     def Or_Term(self):
-        if And_Term():
-            if Or_Tail():
-                return TRUE
+        if self.And_Term():
+            if self.Or_Tail():
+                return True
             else:
                 raise Exception('Syntax error: Or term expected an Or_Tail')
-                return FALSE
+                return False
         else:
             raise Exception('Syntax error: Or term error')
-            return FALSE
+            return False
 
     def Imply_Tail(self):
         if self.lex.get_current() == '->':
             self.lex.get_next()
 
-            if Or_Term():
-                temp = self.lex.pop()
-                temp2 = self.lexl.pop()
+            if self.Or_Term():
+                temp = self.stack.pop()
+                temp2 = self.stack.pop()
 
                 if temp == temp2:
-                    self.lex.push('T')
-                    return TRUE
+                    self.stack.push('T')
+                    return True
                 else:
-                    self.lex.push('F')
-                    return TRUE
+                    self.stack.push('F')
+                    return True
             else:
                 raise Exception('Syntax error: expected Bool_Stmt')
-                return FALSE
+                return False
         else:
-            return TRUE
+            return True
 
     def Imply_Term(self):
-        if Or_Term():
-            if Imply_Tail():
-                return TRUE
+        if self.Or_Term():
+            if self.Imply_Tail():
+                return True
             else:
                 raise Exception('Syntax error: Imply term expected an Imply_Tail')
-                return FALSE
+                return False
         else:
             raise Exception('Syntax error: Imply term error')
-            return FALSE
-    
+            return False
+
     def Bool_Stmt(self):
-        if Imply_Term():
-            return TRUE
+        if self.Imply_Term():
+            return True
         elif self.lex.get_current() == '.':
-            return TRUE
+            return True
         else:
             raise Exception('Syntax error: Not a boolean statement')
-            return FALSE
-                
+            return False
+
     def Final_Value(self):
         return self.stack.pop()
 
-class main(object):
-    def main():
-        text = input('Enter Text> ')
 
-        interpreter = Interpreter(text)
+def main():
+    text = raw_input('Enter text: ')
 
-        print(interpreter.Final_Value())
-
-
+    interpreter = Interpreter(text)
+    interpreter.Bool_Stmt()
+    print(interpreter.Final_Value())
 
 
-
-                
+if __name__ == "__main__":
+    main()
